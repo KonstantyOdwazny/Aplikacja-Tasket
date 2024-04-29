@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ListaZadan</string>
+    <string name="add_btn_desc">Add task button</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_save">Save</string>
+    <string name="description">Description</string>
+    <string name="title">Title</string>
+</resources>
