@@ -3,6 +3,7 @@ package com.example.listazadan.tasks.repo
 import androidx.lifecycle.LiveData
 import com.example.listazadan.data.database.TaskDao
 import com.example.listazadan.data.models.Task
+import androidx.lifecycle.viewModelScope
 
 class TaskRepository(private val taskDao: TaskDao) {
 
@@ -14,6 +15,14 @@ class TaskRepository(private val taskDao: TaskDao) {
     // Metoda do pobierania wszystkich zadań
     fun getAllTasks(): LiveData<List<Task>> {
         return taskDao.getAllTasks()
+    }
+
+    fun getTaskById(taskId: Int): LiveData<Task> {
+        return taskDao.getTaskById(taskId)
+    }
+
+    suspend fun updateTask(task: Task) {
+        taskDao.updateTask(task)
     }
 }
 

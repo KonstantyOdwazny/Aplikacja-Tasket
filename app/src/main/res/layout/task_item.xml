@@ -32,29 +32,13 @@ android:padding="8dp">
         android:id="@+id/btn_delete"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:clickable="true"
+        android:contentDescription="@string/btn_delete_desc"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_edit"
         app:layout_constraintTop_toTopOf="parent"
         app:maxImageSize="40dp"
-        app:srcCompat="@android:drawable/ic_menu_delete"
-        android:contentDescription="@string/btn_delete_desc"
-        android:focusable="true" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:clickable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/taskCheckbox"
-        app:layout_constraintTop_toTopOf="parent"
-        app:maxImageSize="40dp"
-        app:srcCompat="@android:drawable/ic_menu_edit"
-        android:contentDescription="@string/btn_edit_desc"
-        android:focusable="true" />
+        app:srcCompat="@android:drawable/ic_menu_delete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

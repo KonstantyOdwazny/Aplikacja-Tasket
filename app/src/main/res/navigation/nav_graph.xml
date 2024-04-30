@@ -23,5 +23,10 @@
         android:id="@+id/addTaskFragment"
         android:name="com.example.listazadan.tasks.views.AddTaskFragment"
         android:label="fragment_add_task"
-        tools:layout="@layout/fragment_add_task" />
+        tools:layout="@layout/fragment_add_task" >
+        <argument
+            android:name="taskID"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 </navigation>

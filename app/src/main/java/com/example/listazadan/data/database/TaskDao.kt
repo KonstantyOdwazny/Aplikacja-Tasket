@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 
 import androidx.lifecycle.LiveData
+import androidx.room.Update
 import com.example.listazadan.data.models.Task  // Zaimportuj swój model Task
 
 @Dao
@@ -16,5 +17,11 @@ interface TaskDao {
     // Przykładowa metoda do pobierania wszystkich zadań
     @Query("SELECT * FROM tasks")
     fun getAllTasks(): LiveData<List<Task>>
+
+    @Query("SELECT * FROM tasks WHERE id = :taskId")
+    fun getTaskById(taskId: Int): LiveData<Task>
+
+    @Update
+    suspend fun updateTask(task: Task)
 }
 

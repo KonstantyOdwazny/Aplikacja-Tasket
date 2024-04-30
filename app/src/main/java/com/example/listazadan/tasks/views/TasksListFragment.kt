@@ -36,12 +36,23 @@ class TasksListFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory).get(TaskViewModel::class.java)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        val adapter = TaskAdapter(emptyList())
+        val adapter = TaskAdapter(
+            onTaskClick = { task ->
+                // Otwórz fragment lub aktywność do edycji zadania
+                val bundle = Bundle()
+                bundle.putInt("taskID", task.id)
+                findNavController().navigate(R.id.action_tasksListFragment_to_addTaskFragment, bundle)
+            },
+            onTaskDeleteClick = { task ->
+                // Usuń zadanie
+                //viewModel.deleteTask(task)
+            }
+        )
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         viewModel.allTasks.observe(viewLifecycleOwner, Observer { tasks ->
-            adapter.setTasks(tasks)
+            adapter.updateTasks(tasks)
         })
 
         val fab = view.findViewById<FloatingActionButton>(R.id.fab)

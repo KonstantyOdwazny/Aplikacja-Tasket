@@ -8,13 +8,21 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listazadan.R
 import com.example.listazadan.data.models.Task
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-class TaskAdapter(private var tasks: List<Task>) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+class TaskAdapter(
+    private val onTaskClick: (Task) -> Unit,
+    private val onTaskDeleteClick: (Task) -> Unit
+) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
+
+
+    private var _tasks: List<Task> = emptyList()
 
     class TaskViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val taskTitle: TextView = view.findViewById(R.id.taskTitle)
         val taskCheckbox: CheckBox = view.findViewById(R.id.taskCheckbox)
+        val deleteButton: FloatingActionButton = view.findViewById(R.id.btn_delete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -23,15 +31,25 @@ class TaskAdapter(private var tasks: List<Task>) : RecyclerView.Adapter<TaskAdap
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        val task = tasks[position]
+        val task = _tasks[position]
         holder.taskTitle.text = task.title
         holder.taskCheckbox.isChecked = task.isCompleted
+
+        // Listener dla tytułu zadania
+        holder.taskTitle.setOnClickListener {
+            onTaskClick(task)
+        }
+
+        // Listener dla przycisku usuwania
+        holder.deleteButton.setOnClickListener {
+            onTaskDeleteClick(task)
+        }
     }
 
-    override fun getItemCount() = tasks.size
+    override fun getItemCount() : Int = _tasks.size
 
-    fun setTasks(tasks: List<Task>) {
-        this.tasks = tasks
+    fun updateTasks(tasks: List<Task>) {
+        this._tasks = tasks
         notifyDataSetChanged()
     }
 }
