@@ -6,22 +6,55 @@ android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:padding="8dp">
 
-<TextView
-    android:id="@+id/taskTitle"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
-    android:textSize="18sp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintEnd_toStartOf="@id/taskCheckbox"
-    tools:text="Task Title" />
+    <TextView
+        android:id="@+id/taskTitle"
+        android:layout_width="174dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="12dp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@id/taskCheckbox"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Task Title" />
 
     <CheckBox
         android:id="@+id/taskCheckbox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="55dp"
+        android:layout_height="54dp"
+        android:layout_marginEnd="128dp"
         app:layout_constraintBottom_toBottomOf="@id/taskTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/taskTitle" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_delete"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_edit"
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxImageSize="40dp"
+        app:srcCompat="@android:drawable/ic_menu_delete"
+        android:contentDescription="@string/btn_delete_desc"
+        android:focusable="true" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/taskCheckbox"
+        app:layout_constraintTop_toTopOf="parent"
+        app:maxImageSize="40dp"
+        app:srcCompat="@android:drawable/ic_menu_edit"
+        android:contentDescription="@string/btn_edit_desc"
+        android:focusable="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
