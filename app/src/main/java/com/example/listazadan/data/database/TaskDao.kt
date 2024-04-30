@@ -1,13 +1,11 @@
-package com.example.listazadan.database
+package com.example.listazadan.data.database
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 
 import androidx.lifecycle.LiveData
-import com.example.listazadan.database.Task  // Zaimportuj swój model Task
+import com.example.listazadan.data.models.Task  // Zaimportuj swój model Task
 
 @Dao
 interface TaskDao {

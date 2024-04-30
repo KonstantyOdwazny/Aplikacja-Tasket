@@ -1,8 +1,8 @@
-package com.example.listazadan.viewmodel
+package com.example.listazadan.tasks.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.listazadan.database.TaskRepository
+import com.example.listazadan.tasks.repo.TaskRepository
 
 class TaskViewModelFactory(private val repository: TaskRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

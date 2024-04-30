@@ -1,6 +1,8 @@
-package com.example.listazadan.database
+package com.example.listazadan.tasks.repo
 
 import androidx.lifecycle.LiveData
+import com.example.listazadan.data.database.TaskDao
+import com.example.listazadan.data.models.Task
 
 class TaskRepository(private val taskDao: TaskDao) {
 

@@ -1,4 +1,4 @@
-package com.example.listazadan.database
+package com.example.listazadan.data.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,11 +1,10 @@
-package com.example.listazadan.viewmodel
+package com.example.listazadan.tasks.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
-import com.example.listazadan.database.Task
-import com.example.listazadan.database.TaskRepository
+import com.example.listazadan.data.models.Task
+import com.example.listazadan.tasks.repo.TaskRepository
 import kotlinx.coroutines.launch
 
 

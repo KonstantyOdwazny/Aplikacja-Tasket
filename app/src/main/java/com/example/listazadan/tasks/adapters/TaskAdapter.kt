@@ -1,4 +1,4 @@
-package com.example.listazadan.adapter
+package com.example.listazadan.tasks.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listazadan.R
-import com.example.listazadan.database.Task
+import com.example.listazadan.data.models.Task
 
 
 class TaskAdapter(private var tasks: List<Task>) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
