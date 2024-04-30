@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 
 import androidx.lifecycle.LiveData
+import androidx.room.Delete
 import androidx.room.Update
 import com.example.listazadan.data.models.Task  // Zaimportuj swój model Task
 
@@ -23,5 +24,8 @@ interface TaskDao {
 
     @Update
     suspend fun updateTask(task: Task)
+
+    @Delete
+    suspend fun deleteTask(task: Task)
 }
 

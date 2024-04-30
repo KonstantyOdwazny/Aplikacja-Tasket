@@ -25,6 +25,12 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
             repository.updateTask(task)
         }
     }
+
+    fun deleteTask(task: Task) {
+        viewModelScope.launch {
+            repository.deleteTask(task)
+        }
+    }
     // LiveData przechowująca wszystkie zadania
     val allTasks: LiveData<List<Task>> = repository.getAllTasks()
 }

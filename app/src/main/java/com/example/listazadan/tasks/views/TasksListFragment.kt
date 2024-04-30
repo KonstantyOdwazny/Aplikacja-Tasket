@@ -45,7 +45,7 @@ class TasksListFragment : Fragment() {
             },
             onTaskDeleteClick = { task ->
                 // Usuń zadanie
-                //viewModel.deleteTask(task)
+                viewModel.deleteTask(task)
             }
         )
         recyclerView.adapter = adapter
