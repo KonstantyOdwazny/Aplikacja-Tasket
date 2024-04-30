@@ -8,4 +8,5 @@ class MyApp : Application() {
     val taskRepository by lazy {
         TaskRepository(AppDatabase.getDatabase(this).taskDao())
     }
+
 }
