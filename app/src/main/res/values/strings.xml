@@ -10,4 +10,5 @@
     <string name="btn_fragment_save">Save</string>
     <string name="btn_delete_desc">Delete task button</string>
     <string name="btn_edit_desc">Edit task button</string>
+    <string name="edit_date">Date</string>
 </resources>

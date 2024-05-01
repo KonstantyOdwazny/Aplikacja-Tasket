@@ -10,20 +10,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="24dp">
 
         <EditText
             android:id="@+id/editTextTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints=""
             android:hint="@string/title"
-            android:autofillHints="" />
+            android:inputType="text" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+
+            <EditText
+                android:id="@+id/editTextDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/description"
+                android:inputType="textMultiLine" />
+        </ScrollView>
 
         <EditText
-            android:id="@+id/editTextDescription"
+            android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/description"
+            android:ems="10"
+            android:hint="@string/edit_date"
+            android:inputType="date"
             android:autofillHints="" />
 
         <Button
@@ -37,6 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_cancel" />
+
     </LinearLayout>
 
 </FrameLayout>

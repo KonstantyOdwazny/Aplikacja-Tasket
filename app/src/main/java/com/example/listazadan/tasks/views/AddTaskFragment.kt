@@ -1,5 +1,8 @@
 package com.example.listazadan.tasks.views
 
+import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +17,7 @@ import com.example.listazadan.R
 import com.example.listazadan.data.models.Task
 import com.example.listazadan.tasks.viewmodel.TaskViewModel
 import com.example.listazadan.tasks.viewmodel.TaskViewModelFactory
+import java.util.Calendar
 
 
 class AddTaskFragment : Fragment() {
@@ -41,6 +45,7 @@ class AddTaskFragment : Fragment() {
         val buttonCancel = view.findViewById<Button>(R.id.buttonCancel)
         val taskTitle = view.findViewById<EditText>(R.id.editTextTitle)
         val taskDescription = view.findViewById<EditText>(R.id.editTextDescription)
+        val taskDate = view.findViewById<EditText>(R.id.editTextDate)
 
         val taskID: Int = arguments?.getInt("taskID") ?: -1
         println(taskID)
@@ -49,25 +54,48 @@ class AddTaskFragment : Fragment() {
             viewModel.getTaskById(taskID).observe(viewLifecycleOwner) { task ->
                 taskTitle.setText(task.title)
                 taskDescription.setText(task.description)
+                taskDate.setText(task.date)
+            }
+        }
+
+        taskDate.setOnClickListener {
+            showDatePickerDialog(requireContext()) { year, month, dayOfMonth ->
+                val dateString = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth)
+                taskDate.setText(dateString)
             }
         }
 
 
 
         saveButton.setOnClickListener {
-            val title = taskTitle.text.toString()
-            val description = taskDescription.text.toString()
-            if (taskID != -1) {
-                val updatedtask = Task(id = taskID,title = title, description = description, isCompleted = false)
-                viewModel.updateTask(updatedtask)
+            val title: String = taskTitle.text.toString()
+            val description: String = taskDescription.text.toString()
+            val datetext: String = taskDate.text.toString()
+            if (title.isBlank()){
+                showAlertDialog()
             }
-            else{
-                val newtask = Task(title = title, description = description, isCompleted = false)
-                viewModel.addTask(newtask)
+            else {
+                if (taskID != -1) {
+                    val updatedtask = Task(
+                        id = taskID,
+                        title = title,
+                        description = description,
+                        date = datetext,
+                        isCompleted = false
+                    )
+                    viewModel.updateTask(updatedtask)
+                } else {
+                    val newtask = Task(
+                        title = title,
+                        description = description,
+                        date = datetext,
+                        isCompleted = false
+                    )
+                    viewModel.addTask(newtask)
+                }
+                // Navigacja z powrotem do listy zadań lub poprzedniego ekranu
+                findNavController().popBackStack()  // Adjust the ID
             }
-            // Navigacja z powrotem do listy zadań lub poprzedniego ekranu
-            findNavController().popBackStack()  // Adjust the ID
-
         }
 
         buttonCancel.setOnClickListener {
@@ -75,6 +103,38 @@ class AddTaskFragment : Fragment() {
             findNavController().popBackStack()
         }
     }
+
+    fun showDatePickerDialog(context: Context, setDate: (year: Int, month: Int, dayOfMonth: Int) -> Unit) {
+        // Uzyskanie bieżącej daty
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        // Tworzenie nowego DatePickerDialog
+        val datePickerDialog = DatePickerDialog(context, { _, selectedYear, selectedMonth, selectedDay ->
+            // Ta funkcja zostanie wywołana, gdy data zostanie wybrana
+            setDate(selectedYear, selectedMonth, selectedDay)
+        }, year, month, day)
+
+        // Ustawianie minimalnej daty
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000  // Zakaz wyboru daty w przeszłości
+
+        // Ustawianie maksymalnej daty
+        val maxCalendar = Calendar.getInstance()
+        maxCalendar.set(Calendar.YEAR, 2030)
+        datePickerDialog.datePicker.maxDate = maxCalendar.timeInMillis
+
+        datePickerDialog.show()  // Pokaż dialog
+    }
+    private fun showAlertDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Błąd")
+            .setMessage("Niemożliwe utworzenie zadania bez tytułu. Proszę uzupełnij pole.")
+            .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+            .show()
+    }
+
 
 //    companion object {
 //        /**
