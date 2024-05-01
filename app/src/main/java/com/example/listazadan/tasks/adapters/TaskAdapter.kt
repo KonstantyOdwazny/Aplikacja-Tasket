@@ -13,7 +13,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TaskAdapter(
     private val onTaskClick: (Task) -> Unit,
-    private val onTaskDeleteClick: (Task) -> Unit
+    private val onTaskDeleteClick: (Task) -> Unit,
+    private val onCheckClick: (Task) -> Unit
 ) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
 
@@ -43,6 +44,11 @@ class TaskAdapter(
         // Listener dla przycisku usuwania
         holder.deleteButton.setOnClickListener {
             onTaskDeleteClick(task)
+        }
+
+        // Listener dla Checkboxa
+        holder.taskCheckbox.setOnClickListener {
+            onCheckClick(task)
         }
     }
 

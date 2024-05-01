@@ -17,6 +17,10 @@ class TaskRepository(private val taskDao: TaskDao) {
         return taskDao.getAllTasks()
     }
 
+    fun getTaskByCompleteCheck(completeMark: Boolean): LiveData<List<Task>> {
+        return taskDao.getTaskByCompleteCheck(completeMark)
+    }
+
     fun getTaskById(taskId: Int): LiveData<Task> {
         return taskDao.getTaskById(taskId)
     }
