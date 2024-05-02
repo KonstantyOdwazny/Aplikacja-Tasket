@@ -25,6 +25,10 @@ class TaskRepository(private val taskDao: TaskDao) {
         return taskDao.getTaskById(taskId)
     }
 
+    fun getTasksByGroup(groupId: Int): List<Task>{
+        return taskDao.getTasksByGroup(groupId)
+    }
+
     suspend fun updateTask(task: Task) {
         taskDao.updateTask(task)
     }

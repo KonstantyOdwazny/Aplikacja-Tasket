@@ -25,6 +25,9 @@ interface TaskDao {
     @Query("SELECT * FROM tasks WHERE isCompleted = :completeMark")
     fun getTaskByCompleteCheck(completeMark: Boolean): LiveData<List<Task>>
 
+    @Query("SELECT * FROM tasks WHERE groupId = :groupId")
+    fun getTasksByGroup(groupId: Int): List<Task>
+
     @Update
     suspend fun updateTask(task: Task)
 

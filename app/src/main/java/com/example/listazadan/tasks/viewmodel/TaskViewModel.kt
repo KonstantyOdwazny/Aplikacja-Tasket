@@ -35,12 +35,6 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
     // LiveData przechowująca wszystkie zadania
     val allTasks: LiveData<List<Task>> = repository.getAllTasks()
 
-//    // LiveData przechowujaca zrobione zadania
-//    val doneTask: LiveData<List<Task>> = repository.getTaskByCompleteCheck(true)
-//
-//    // LiveData przechowujaca zadania do zrobienia
-//    val ToDoTask: LiveData<List<Task>> = repository.getTaskByCompleteCheck(false)
-
     var selectedTab: Int = 0
     val filteredTasks = MediatorLiveData<List<Task>>()
 

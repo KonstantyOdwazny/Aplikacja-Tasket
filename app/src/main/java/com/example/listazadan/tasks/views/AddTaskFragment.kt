@@ -8,13 +8,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.listazadan.MyApp
 import com.example.listazadan.R
+import com.example.listazadan.data.models.Group
 import com.example.listazadan.data.models.Task
+import com.example.listazadan.databinding.FragmentAddTaskBinding
+import com.example.listazadan.tasks.viewmodel.GroupViewModel
 import com.example.listazadan.tasks.viewmodel.TaskViewModel
 import com.example.listazadan.tasks.viewmodel.TaskViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -24,6 +31,7 @@ import java.util.Calendar
 class AddTaskFragment : Fragment() {
 
     private lateinit var viewModel: TaskViewModel
+    private lateinit var groupViewModel: GroupViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +40,13 @@ class AddTaskFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_task, container, false)
+    ): View {
+        val binding = FragmentAddTaskBinding.inflate(inflater, container, false)
+        groupViewModel = ViewModelProvider(this)[GroupViewModel::class.java]
+
+        setupSpinner(binding.spinnerGroup, groupViewModel.groups)
+
+        return binding.root
     }
 
     override fun onDestroyView() {
@@ -63,6 +75,7 @@ class AddTaskFragment : Fragment() {
         val taskTitle = view.findViewById<EditText>(R.id.editTextTitle)
         val taskDescription = view.findViewById<EditText>(R.id.editTextDescription)
         val taskDate = view.findViewById<EditText>(R.id.editTextDate)
+        val chosenGroup = view.findViewById<Spinner>(R.id.spinnerGroup)
 
         val taskID: Int = arguments?.getInt("taskID") ?: -1
         println(taskID)
@@ -88,6 +101,7 @@ class AddTaskFragment : Fragment() {
             val title: String = taskTitle.text.toString()
             val description: String = taskDescription.text.toString()
             val datetext: String = taskDate.text.toString()
+            //val chosengroup: String = chosenGroup.
             if (title.isBlank()){
                 showAlertDialog()
             }
@@ -98,7 +112,8 @@ class AddTaskFragment : Fragment() {
                         title = title,
                         description = description,
                         date = datetext,
-                        isCompleted = false
+                        isCompleted = false,
+                        groupId = 0
                     )
                     viewModel.updateTask(updatedtask)
                 } else {
@@ -106,7 +121,8 @@ class AddTaskFragment : Fragment() {
                         title = title,
                         description = description,
                         date = datetext,
-                        isCompleted = false
+                        isCompleted = false,
+                        groupId = 0
                     )
                     viewModel.addTask(newtask)
                 }
@@ -151,6 +167,18 @@ class AddTaskFragment : Fragment() {
             .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
             .show()
     }
+
+    fun setupSpinner(spinner: Spinner, groups: LiveData<List<Group>>) {
+        val adapter = ArrayAdapter<String>(spinner.context, android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
+        groups.observe(viewLifecycleOwner, Observer { groupList ->
+            adapter.clear()
+            adapter.addAll(groupList.map { it.name })
+            adapter.notifyDataSetChanged()
+        })
+    }
+
 
 
 //    companion object {
