@@ -15,4 +15,7 @@
     <string name="tab2">Done Task</string>
     <string name="settings_btn">Settings</string>
     <string name="tab3">All Task</string>
+    <string name="title_groups">Groups</string>
+    <string name="title_tasks">Task list</string>
+    <string name="title_calendar">Calendar</string>
 </resources>

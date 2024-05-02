@@ -17,6 +17,7 @@ import com.example.listazadan.R
 import com.example.listazadan.data.models.Task
 import com.example.listazadan.tasks.viewmodel.TaskViewModel
 import com.example.listazadan.tasks.viewmodel.TaskViewModelFactory
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.Calendar
 
 
@@ -36,8 +37,24 @@ class AddTaskFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_add_task, container, false)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Pokaż Toolbar i BottomNavigationView
+        (activity as MainActivity).supportActionBar?.show()
+        (activity as MainActivity).findViewById<BottomNavigationView>(R.id.bottom_navigation).visibility = View.VISIBLE
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val bottomPadding = resources.getDimensionPixelSize(R.dimen.bottom_nav_height) // Definiujesz w dimens.xml
+        this.view?.setPadding(0, 0, 0, bottomPadding)
+
+        // Ukrywanie toolbar i bottom navigation
+        (activity as MainActivity).supportActionBar?.hide()
+        (activity as MainActivity).findViewById<BottomNavigationView>(R.id.bottom_navigation).visibility = View.GONE
+
+
         val factory = TaskViewModelFactory((requireActivity().application as MyApp).taskRepository)
         viewModel = ViewModelProvider(this, factory).get(TaskViewModel::class.java)
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_groups"
+        android:icon="@drawable/group_list_svgrepo_com"
+        android:title="@string/title_groups" />
+    <item
+        android:id="@+id/navigation_tasks"
+        android:icon="@drawable/task_list_svgrepo_com"
+        android:title="@string/title_tasks" />
+    <item
+        android:id="@+id/navigation_calendar"
+        android:icon="@drawable/calendar_days_svgrepo_com"
+        android:title="@string/title_calendar" />
+</menu>

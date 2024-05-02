@@ -1,8 +1,10 @@
 package com.example.listazadan.tasks.views
 
+import android.content.res.Resources
 import com.example.listazadan.tasks.adapters.TaskAdapter
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,17 +37,14 @@ class TasksListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Dodanie paddingow
 
-        val toolbar = view.findViewById<Toolbar>(R.id.listtoolbar)
-        toolbar.inflateMenu(R.menu.toolbar_menu)
-        toolbar.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.action_settings -> {
-                    // Handle settings action
-                    true
-                }
-                else -> false
-            }
+        try {
+            val topPadding = resources.getDimensionPixelSize(R.dimen.toolbar_height) // Definiujesz w dimens.xml
+            val bottomPadding = resources.getDimensionPixelSize(R.dimen.bottom_nav_height) // Definiujesz w dimens.xml
+            view.setPadding(0, topPadding, 0, bottomPadding)
+        }catch (e: Resources.NotFoundException) {
+            Log.e("TAG", "Resource not found: " + e.message)
         }
 
         val factory = TaskViewModelFactory((requireActivity().application as MyApp).taskRepository)
