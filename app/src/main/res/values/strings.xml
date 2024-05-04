@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ListaZadan</string>
     <string name="add_btn_desc">Add task button</string>
+    <string name="add_group_btn_desc">Add group button</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_save">Save</string>
     <string name="description">Description</string>
@@ -9,6 +10,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="btn_fragment_save">Save</string>
     <string name="btn_delete_desc">Delete task button</string>
+    <string name="group_btn_delete_desc">Delete group button</string>
     <string name="btn_edit_desc">Edit task button</string>
     <string name="edit_date">Date</string>
     <string name="tab1">TODO Task</string>
@@ -18,4 +20,5 @@
     <string name="title_groups">Groups</string>
     <string name="title_tasks">Task list</string>
     <string name="title_calendar">Calendar</string>
+    <string name="edit_group">Edit groups info</string>
 </resources>

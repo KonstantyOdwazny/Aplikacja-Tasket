@@ -133,7 +133,8 @@ class AddTaskFragment : Fragment() {
             val title: String = binding.editTextTitle.text.toString()
             val description: String = binding.editTextDescription.text.toString()
             val datetext: String = binding.editTextDate.text.toString()
-            //val chosengroup: String = chosenGroup.
+            val groupchoice: Int = binding.spinnerGroup.id
+
             if (title.isBlank()){
                 showAlertDialog()
             }
@@ -145,7 +146,7 @@ class AddTaskFragment : Fragment() {
                         description = description,
                         date = datetext,
                         isCompleted = false,
-                        groupId = 1
+                        groupId = groupchoice
                     )
                     taskViewModel.updateTask(updatedtask)
                 } else {
@@ -154,7 +155,7 @@ class AddTaskFragment : Fragment() {
                         description = description,
                         date = datetext,
                         isCompleted = false,
-                        groupId = 1
+                        groupId = groupchoice
                     )
                     taskViewModel.addTask(newtask)
                 }

@@ -72,7 +72,7 @@ class TasksListFragment : Fragment() {
                     title = task.title,
                     date = task.date,
                     isCompleted = !task.isCompleted,
-                    groupId = 1)
+                    groupId = task.groupId)
                 taskViewModel.updateTask(newtask)
             }
         )
