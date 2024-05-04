@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.example.listazadan.data.models.Task
+import com.example.listazadan.data.models.TaskFilter
 import com.example.listazadan.tasks.repo.TaskRepository
 import kotlinx.coroutines.launch
 
@@ -35,7 +36,7 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
     // LiveData przechowująca wszystkie zadania
     val allTasks: LiveData<List<Task>> = repository.getAllTasks()
 
-    var selectedTab: Int = 0
+    var selectedTab: TaskFilter = TaskFilter.ALL
     val filteredTasks = MediatorLiveData<List<Task>>()
 
     init {
@@ -43,14 +44,14 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
             filteredTasks.value = filterTasks(tasks, selectedTab)
         }
     }
-    private fun filterTasks(tasks: List<Task>, tab: Int): List<Task> {
+    private fun filterTasks(tasks: List<Task>, tab: TaskFilter): List<Task> {
         return when (tab) {
-            1 -> tasks.filter { !it.isCompleted }
-            2 -> tasks.filter { it.isCompleted }
+            TaskFilter.TODO -> tasks.filter { !it.isCompleted }
+            TaskFilter.DONE -> tasks.filter { it.isCompleted }
             else -> tasks // All tasks
         }
     }
-    fun onTabSelected(tabIndex: Int) {
+    fun onTabSelected(tabIndex: TaskFilter) {
         selectedTab = tabIndex
         filteredTasks.value = filterTasks(allTasks.value ?: emptyList(), selectedTab)
     }

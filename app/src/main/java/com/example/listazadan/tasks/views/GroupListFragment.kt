@@ -7,9 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.listazadan.R
+import com.example.listazadan.databinding.FragmentAddTaskBinding
+import com.example.listazadan.databinding.FragmentGroupListBinding
 import com.example.listazadan.tasks.viewmodel.GroupViewModel
 
 class GroupListFragment : Fragment() {
+
+    private var _binding: FragmentGroupListBinding? = null
+    private val binding get() = _binding!!
 
     companion object {
         fun newInstance() = GroupListFragment()
@@ -27,6 +32,13 @@ class GroupListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_group_list, container, false)
+        _binding = FragmentGroupListBinding.inflate(inflater, container, false)
+
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

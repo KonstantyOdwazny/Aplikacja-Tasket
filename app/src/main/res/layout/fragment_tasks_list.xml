@@ -18,21 +18,21 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:tabMode="scrollable">
 
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/alltask_tab"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/tab3" />
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/todo_tab"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/tab1" />
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/done_tab"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/tab2" />
+<!--            <com.google.android.material.tabs.TabItem-->
+<!--                android:id="@+id/all_task"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:text="@string/tab3" />-->
+<!--            <com.google.android.material.tabs.TabItem-->
+<!--                android:id="@+id/todo_tab"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:text="@string/tab1" />-->
+<!--            <com.google.android.material.tabs.TabItem-->
+<!--                android:id="@+id/done_tab"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:text="@string/tab2" />-->
         </com.google.android.material.tabs.TabLayout>
     </com.google.android.material.appbar.AppBarLayout>
 

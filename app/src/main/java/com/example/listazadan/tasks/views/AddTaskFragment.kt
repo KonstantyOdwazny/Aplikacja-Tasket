@@ -9,19 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.listazadan.MyApp
 import com.example.listazadan.R
-import com.example.listazadan.data.models.Group
 import com.example.listazadan.data.models.Task
 import com.example.listazadan.databinding.FragmentAddTaskBinding
 import com.example.listazadan.tasks.viewmodel.GroupViewModel
+import com.example.listazadan.tasks.viewmodel.GroupViewModelFactory
 import com.example.listazadan.tasks.viewmodel.TaskViewModel
 import com.example.listazadan.tasks.viewmodel.TaskViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -30,8 +26,12 @@ import java.util.Calendar
 
 class AddTaskFragment : Fragment() {
 
-    private lateinit var viewModel: TaskViewModel
+    private lateinit var taskViewModel: TaskViewModel
     private lateinit var groupViewModel: GroupViewModel
+    private var _binding: FragmentAddTaskBinding? = null
+    private val binding get() = _binding!!
+
+    private var taskID: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +41,12 @@ class AddTaskFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentAddTaskBinding.inflate(inflater, container, false)
-        groupViewModel = ViewModelProvider(this)[GroupViewModel::class.java]
+        _binding = FragmentAddTaskBinding.inflate(inflater, container, false)
 
-        setupSpinner(binding.spinnerGroup, groupViewModel.groups)
-
+        val groupFactory = GroupViewModelFactory((requireActivity().application as MyApp).groupRepository)
+        groupViewModel = ViewModelProvider(this, groupFactory)[GroupViewModel::class.java]
+        val taskFactory = TaskViewModelFactory((requireActivity().application as MyApp).taskRepository)
+        taskViewModel = ViewModelProvider(this, taskFactory)[TaskViewModel::class.java]
         return binding.root
     }
 
@@ -54,11 +55,14 @@ class AddTaskFragment : Fragment() {
         // Pokaż Toolbar i BottomNavigationView
         (activity as MainActivity).supportActionBar?.show()
         (activity as MainActivity).findViewById<BottomNavigationView>(R.id.bottom_navigation).visibility = View.VISIBLE
+
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Padding na bottom navigation
         val bottomPadding = resources.getDimensionPixelSize(R.dimen.bottom_nav_height) // Definiujesz w dimens.xml
         this.view?.setPadding(0, 0, 0, bottomPadding)
 
@@ -66,75 +70,13 @@ class AddTaskFragment : Fragment() {
         (activity as MainActivity).supportActionBar?.hide()
         (activity as MainActivity).findViewById<BottomNavigationView>(R.id.bottom_navigation).visibility = View.GONE
 
+        // Sprawdzenie wchodzących argumentów
+        taskID = arguments?.getInt("taskID") ?: -1
 
-        val factory = TaskViewModelFactory((requireActivity().application as MyApp).taskRepository)
-        viewModel = ViewModelProvider(this, factory).get(TaskViewModel::class.java)
+        setupSpinner()
+        observeViewModel()
+        configureListeners()
 
-        val saveButton = view.findViewById<Button>(R.id.buttonSave)
-        val buttonCancel = view.findViewById<Button>(R.id.buttonCancel)
-        val taskTitle = view.findViewById<EditText>(R.id.editTextTitle)
-        val taskDescription = view.findViewById<EditText>(R.id.editTextDescription)
-        val taskDate = view.findViewById<EditText>(R.id.editTextDate)
-        val chosenGroup = view.findViewById<Spinner>(R.id.spinnerGroup)
-
-        val taskID: Int = arguments?.getInt("taskID") ?: -1
-        println(taskID)
-
-        if (taskID != -1){
-            viewModel.getTaskById(taskID).observe(viewLifecycleOwner) { task ->
-                taskTitle.setText(task.title)
-                taskDescription.setText(task.description)
-                taskDate.setText(task.date)
-            }
-        }
-
-        taskDate.setOnClickListener {
-            showDatePickerDialog(requireContext()) { year, month, dayOfMonth ->
-                val dateString = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth)
-                taskDate.setText(dateString)
-            }
-        }
-
-
-
-        saveButton.setOnClickListener {
-            val title: String = taskTitle.text.toString()
-            val description: String = taskDescription.text.toString()
-            val datetext: String = taskDate.text.toString()
-            //val chosengroup: String = chosenGroup.
-            if (title.isBlank()){
-                showAlertDialog()
-            }
-            else {
-                if (taskID != -1) {
-                    val updatedtask = Task(
-                        id = taskID,
-                        title = title,
-                        description = description,
-                        date = datetext,
-                        isCompleted = false,
-                        groupId = 0
-                    )
-                    viewModel.updateTask(updatedtask)
-                } else {
-                    val newtask = Task(
-                        title = title,
-                        description = description,
-                        date = datetext,
-                        isCompleted = false,
-                        groupId = 0
-                    )
-                    viewModel.addTask(newtask)
-                }
-                // Navigacja z powrotem do listy zadań lub poprzedniego ekranu
-                findNavController().popBackStack()  // Adjust the ID
-            }
-        }
-
-        buttonCancel.setOnClickListener {
-            // Navigacja z powrotem do listy zadań lub poprzedniego ekranu
-            findNavController().popBackStack()
-        }
     }
 
     fun showDatePickerDialog(context: Context, setDate: (year: Int, month: Int, dayOfMonth: Int) -> Unit) {
@@ -168,36 +110,74 @@ class AddTaskFragment : Fragment() {
             .show()
     }
 
-    fun setupSpinner(spinner: Spinner, groups: LiveData<List<Group>>) {
-        val adapter = ArrayAdapter<String>(spinner.context, android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
-
-        groups.observe(viewLifecycleOwner, Observer { groupList ->
+    private fun setupSpinner() {
+        val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerGroup.adapter = adapter
+        groupViewModel.groups.observe(viewLifecycleOwner, Observer { groupList ->
             adapter.clear()
             adapter.addAll(groupList.map { it.name })
             adapter.notifyDataSetChanged()
         })
     }
 
+    private fun configureListeners(){
 
+        binding.editTextDate.setOnClickListener {
+            showDatePickerDialog(requireContext()) { year, month, dayOfMonth ->
+                val dateString = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth)
+                binding.editTextDate.setText(dateString)
+            }
+        }
 
-//    companion object {
-//        /**
-//         * Use this factory method to create a new instance of
-//         * this fragment using the provided parameters.
-//         *
-//         * @param param1 Parameter 1.
-//         * @param param2 Parameter 2.
-//         * @return A new instance of fragment AddTaskFragment.
-//         */
-//        // TODO: Rename and change types and number of parameters
-//        @JvmStatic
-//        fun newInstance(param1: String, param2: String) =
-//            AddTaskFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_TITLE, param1)
-//                    putString(ARG_DESCRIPTION, param2)
-//                }
-//            }
-//    }
+        binding.buttonSave.setOnClickListener {
+            val title: String = binding.editTextTitle.text.toString()
+            val description: String = binding.editTextDescription.text.toString()
+            val datetext: String = binding.editTextDate.text.toString()
+            //val chosengroup: String = chosenGroup.
+            if (title.isBlank()){
+                showAlertDialog()
+            }
+            else {
+                if (taskID != -1) {
+                    val updatedtask = Task(
+                        id = taskID,
+                        title = title,
+                        description = description,
+                        date = datetext,
+                        isCompleted = false,
+                        groupId = 1
+                    )
+                    taskViewModel.updateTask(updatedtask)
+                } else {
+                    val newtask = Task(
+                        title = title,
+                        description = description,
+                        date = datetext,
+                        isCompleted = false,
+                        groupId = 1
+                    )
+                    taskViewModel.addTask(newtask)
+                }
+                // Navigacja z powrotem do listy zadań lub poprzedniego ekranu
+                findNavController().popBackStack()  // Adjust the ID
+            }
+        }
+
+        binding.buttonCancel.setOnClickListener {
+            // Navigacja z powrotem do listy zadań lub poprzedniego ekranu
+            findNavController().popBackStack()
+        }
+
+    }
+
+    private fun observeViewModel(){
+        if (taskID != -1){
+            taskViewModel.getTaskById(taskID).observe(viewLifecycleOwner) { task ->
+                binding.editTextTitle.setText(task.title)
+                binding.editTextDescription.setText(task.description)
+                binding.editTextDate.setText(task.date)
+            }
+        }
+    }
+
 }
