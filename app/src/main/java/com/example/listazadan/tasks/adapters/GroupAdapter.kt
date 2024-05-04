@@ -40,14 +40,17 @@ class GroupAdapter(
 
         holder.groupTitle.setOnClickListener {
             //TODO add filter to TaskList to view only task with choice groupID
+            onGroupClick(group)
         }
 
         holder.deleteButton.setOnClickListener{
             //TODO add delete group from database
+            onGroupDeleteClick(group)
         }
 
         holder.editButton.setOnClickListener {
             //TODO add edit view and edit comand to database
+            onGroupEditClick(group)
         }
 
     }
