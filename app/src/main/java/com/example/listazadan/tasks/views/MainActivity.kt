@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_calendar -> {
                     // Przełącz fragment na Kalendarz
+                    navController.navigate(R.id.calendarFragment)
                     true
                 }
                 else -> false
