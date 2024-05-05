@@ -38,22 +38,29 @@ class TaskViewModel(private val repository: TaskRepository) : ViewModel() {
 
     var selectedTab: TaskFilter = TaskFilter.ALL
     val filteredTasks = MediatorLiveData<List<Task>>()
+    var selectedGroup: Int = 1
 
     init {
         filteredTasks.addSource(allTasks) { tasks ->
-            filteredTasks.value = filterTasks(tasks, selectedTab)
+            filteredTasks.value = filterTasks(tasks, selectedTab, selectedGroup)
         }
     }
-    private fun filterTasks(tasks: List<Task>, tab: TaskFilter): List<Task> {
+    private fun filterTasks(tasks: List<Task>, tab: TaskFilter, groupID: Int): List<Task> {
+        val filteredTasks = tasks.filter { it.groupId == groupID }
         return when (tab) {
-            TaskFilter.TODO -> tasks.filter { !it.isCompleted }
-            TaskFilter.DONE -> tasks.filter { it.isCompleted }
-            else -> tasks // All tasks
+            TaskFilter.TODO -> filteredTasks.filter { !it.isCompleted }
+            TaskFilter.DONE -> filteredTasks.filter { it.isCompleted }
+            else -> filteredTasks // All tasks
         }
     }
     fun onTabSelected(tabIndex: TaskFilter) {
         selectedTab = tabIndex
-        filteredTasks.value = filterTasks(allTasks.value ?: emptyList(), selectedTab)
+        filteredTasks.value = filterTasks(allTasks.value ?: emptyList(), selectedTab, selectedGroup)
+    }
+
+    fun onGroupSelected(groupID: Int){
+        selectedGroup = groupID
+        filteredTasks.value = filterTasks(allTasks.value ?: emptyList(), selectedTab, selectedGroup)
     }
 }
 

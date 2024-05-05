@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.listazadan.MyApp
 import com.example.listazadan.R
+import com.example.listazadan.data.models.Group
 import com.example.listazadan.data.models.Task
 import com.example.listazadan.databinding.FragmentAddTaskBinding
 import com.example.listazadan.tasks.viewmodel.GroupViewModel
@@ -32,6 +33,8 @@ class AddTaskFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var taskID: Int = -1
+
+    private var selectedGroup: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,8 +76,8 @@ class AddTaskFragment : Fragment() {
         // Sprawdzenie wchodzących argumentów
         taskID = arguments?.getInt("taskID") ?: -1
 
-        setupSpinner()
         observeViewModel()
+        setupSpinner()
         configureListeners()
 
     }
@@ -111,12 +114,17 @@ class AddTaskFragment : Fragment() {
     }
 
     private fun setupSpinner() {
-        val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_dropdown_item)
+        val adapter = ArrayAdapter<Group>(requireContext(), android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerGroup.adapter = adapter
         groupViewModel.groups.observe(viewLifecycleOwner, Observer { groupList ->
             adapter.clear()
-            adapter.addAll(groupList.map { it.name })
+            adapter.addAll(groupList)
             adapter.notifyDataSetChanged()
+
+            val defaultIndex = groupList.indexOfFirst { it.groupId == selectedGroup }
+            if (defaultIndex > 0) {
+                binding.spinnerGroup.setSelection(defaultIndex)
+            }
         })
     }
 
@@ -133,7 +141,7 @@ class AddTaskFragment : Fragment() {
             val title: String = binding.editTextTitle.text.toString()
             val description: String = binding.editTextDescription.text.toString()
             val datetext: String = binding.editTextDate.text.toString()
-            val groupchoice: Int = binding.spinnerGroup.id
+            val groupchoice: Int = (binding.spinnerGroup.selectedItem as Group).groupId
 
             if (title.isBlank()){
                 showAlertDialog()
@@ -177,6 +185,7 @@ class AddTaskFragment : Fragment() {
                 binding.editTextTitle.setText(task.title)
                 binding.editTextDescription.setText(task.description)
                 binding.editTextDate.setText(task.date)
+                selectedGroup = task.groupId
             }
         }
     }

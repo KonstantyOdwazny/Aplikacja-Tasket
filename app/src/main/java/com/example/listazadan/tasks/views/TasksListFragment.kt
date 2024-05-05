@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.listazadan.MyApp
 import com.example.listazadan.R
+import com.example.listazadan.data.models.Group
 import com.example.listazadan.data.models.Task
 import com.example.listazadan.databinding.FragmentTasksListBinding
 import com.example.listazadan.tasks.viewmodel.TaskViewModel
@@ -23,6 +26,8 @@ import com.example.listazadan.tasks.viewmodel.TaskViewModelFactory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.example.listazadan.data.models.TaskFilter
+import com.example.listazadan.tasks.viewmodel.GroupViewModel
+import com.example.listazadan.tasks.viewmodel.GroupViewModelFactory
 
 
 class TasksListFragment : Fragment() {
@@ -32,8 +37,15 @@ class TasksListFragment : Fragment() {
 
 
     private lateinit var taskViewModel: TaskViewModel
+    private lateinit var groupViewModel: GroupViewModel
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentTasksListBinding.inflate(inflater, container, false)
+
+        val factory = TaskViewModelFactory((requireActivity().application as MyApp).taskRepository)
+        taskViewModel = ViewModelProvider(this, factory)[TaskViewModel::class.java]
+        val groupFactory = GroupViewModelFactory((requireActivity().application as MyApp).groupRepository)
+        groupViewModel = ViewModelProvider(this, groupFactory)[GroupViewModel::class.java]
+
         return binding.root
     }
 
@@ -50,8 +62,7 @@ class TasksListFragment : Fragment() {
             Log.e("TAG", "Resource not found: " + e.message)
         }
 
-        val factory = TaskViewModelFactory((requireActivity().application as MyApp).taskRepository)
-        taskViewModel = ViewModelProvider(this, factory).get(TaskViewModel::class.java)
+
 
 
         val adapter = TaskAdapter(
@@ -84,11 +95,6 @@ class TasksListFragment : Fragment() {
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 taskViewModel.onTabSelected(tab?.position?.let { TaskFilter.fromInt(it) } ?: TaskFilter.ALL)
-//                when (tab?.position) {
-//                    0 -> taskViewModel.onTabSelected(TaskFilter.ALL)
-//                    1 -> taskViewModel.onTabSelected(TaskFilter.TODO)
-//                    2 -> taskViewModel.onTabSelected(TaskFilter.DONE)
-//                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -117,6 +123,26 @@ class TasksListFragment : Fragment() {
         binding.fab.setOnClickListener {
             // Użyj NavController do nawigacji do fragmentu dodawania zadania
             findNavController().navigate(R.id.action_tasksListFragment_to_addTaskFragment)
+        }
+
+        val spinnerAdapter = ArrayAdapter<Group>(requireContext(), android.R.layout.simple_spinner_dropdown_item)
+        binding.groupSpinner.adapter = spinnerAdapter
+        groupViewModel.groups.observe(viewLifecycleOwner, Observer { groupList ->
+            spinnerAdapter.clear()
+            spinnerAdapter.addAll(groupList)
+            spinnerAdapter.notifyDataSetChanged()
+        })
+
+        binding.groupSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val selectedGroup = parent.getItemAtPosition(position) as Group
+                // Filtruj dane na podstawie wybranej grupy
+                taskViewModel.onGroupSelected(selectedGroup.groupId)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Opcjonalnie, obsługa sytuacji, gdy nic nie jest wybrane
+            }
         }
 
     }

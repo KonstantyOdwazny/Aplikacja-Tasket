@@ -7,8 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.listazadan.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,15 +27,22 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        //setupActionBarWithNavController(navController)
+
+
         val bottomNavigationView: BottomNavigationView = findViewById(R.id.bottom_navigation)
-        bottomNavigationView.setOnClickListener { item ->
-            when (item.id) {
+        bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
                 R.id.navigation_groups -> {
                     // Przełącz fragment na Grupy
+                    navController.navigate(R.id.groupListFragment)
                     true
                 }
                 R.id.navigation_tasks -> {
                     // Przełącz fragment na Lista Zadań
+                    navController.navigate(R.id.tasksListFragment)
                     true
                 }
                 R.id.navigation_calendar -> {

@@ -29,9 +29,7 @@ class GroupAdapter(
         return GroupViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        TODO("Not yet implemented")
-    }
+    override fun getItemCount(): Int = _groups.size
 
     override fun onBindViewHolder(holder: GroupViewHolder, position: Int) {
         val group = _groups[position]
@@ -39,19 +37,22 @@ class GroupAdapter(
         holder.groupTitle.text = group.name
 
         holder.groupTitle.setOnClickListener {
-            //TODO add filter to TaskList to view only task with choice groupID
             onGroupClick(group)
         }
 
         holder.deleteButton.setOnClickListener{
-            //TODO add delete group from database
             onGroupDeleteClick(group)
         }
 
         holder.editButton.setOnClickListener {
-            //TODO add edit view and edit comand to database
             onGroupEditClick(group)
         }
 
+    }
+
+
+    fun updateGroups(groups: List<Group>){
+        this._groups = groups
+        notifyDataSetChanged()
     }
 }
