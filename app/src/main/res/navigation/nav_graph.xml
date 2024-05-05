@@ -25,6 +25,10 @@
             app:exitAnim="@animator/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <argument
+            android:name="choosenGroup"
+            app:argType="integer"
+            android:defaultValue="1" />
     </fragment>
     <fragment
         android:id="@+id/addTaskFragment"
@@ -35,6 +39,10 @@
             android:name="taskID"
             app:argType="integer"
             android:defaultValue="-1" />
+        <argument
+            android:name="groupID"
+            app:argType="integer"
+            android:defaultValue="1" />
     </fragment>
     <fragment
         android:id="@+id/groupListFragment"

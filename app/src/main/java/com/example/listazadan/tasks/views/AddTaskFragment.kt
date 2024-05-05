@@ -23,6 +23,7 @@ import com.example.listazadan.tasks.viewmodel.TaskViewModel
 import com.example.listazadan.tasks.viewmodel.TaskViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.util.Calendar
+import androidx.fragment.app.FragmentActivity
 
 
 class AddTaskFragment : Fragment() {
@@ -75,6 +76,8 @@ class AddTaskFragment : Fragment() {
 
         // Sprawdzenie wchodzących argumentów
         taskID = arguments?.getInt("taskID") ?: -1
+
+        selectedGroup = arguments?.getInt("groupID") ?: 1
 
         observeViewModel()
         setupSpinner()

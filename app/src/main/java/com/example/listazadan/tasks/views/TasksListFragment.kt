@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.listazadan.MyApp
 import com.example.listazadan.R
 import com.example.listazadan.data.models.Group
@@ -23,7 +22,6 @@ import com.example.listazadan.data.models.Task
 import com.example.listazadan.databinding.FragmentTasksListBinding
 import com.example.listazadan.tasks.viewmodel.TaskViewModel
 import com.example.listazadan.tasks.viewmodel.TaskViewModelFactory
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.example.listazadan.data.models.TaskFilter
 import com.example.listazadan.tasks.viewmodel.GroupViewModel
@@ -38,6 +36,8 @@ class TasksListFragment : Fragment() {
 
     private lateinit var taskViewModel: TaskViewModel
     private lateinit var groupViewModel: GroupViewModel
+
+    private var groupArgument: Int = 1
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentTasksListBinding.inflate(inflater, container, false)
 
@@ -62,14 +62,30 @@ class TasksListFragment : Fragment() {
             Log.e("TAG", "Resource not found: " + e.message)
         }
 
+        groupArgument = arguments?.getInt("choosenGroup") ?: 1
+        if (groupArgument != 1){
+            taskViewModel.onGroupSelected(groupArgument)
+        }
 
+        val spinnerAdapter = ArrayAdapter<Group>(requireContext(), android.R.layout.simple_spinner_dropdown_item)
+        binding.groupSpinner.adapter = spinnerAdapter
+        groupViewModel.groups.observe(viewLifecycleOwner, Observer { groupList ->
+            spinnerAdapter.clear()
+            spinnerAdapter.addAll(groupList)
+            spinnerAdapter.notifyDataSetChanged()
 
+            val defaultIndex = groupList.indexOfFirst { it.groupId == groupArgument }
+            if (defaultIndex > 0) {
+                binding.groupSpinner.setSelection(defaultIndex)
+            }
+        })
 
         val adapter = TaskAdapter(
             onTaskClick = { task ->
                 // Otwórz fragment lub aktywność do edycji zadania
                 val bundle = Bundle()
                 bundle.putInt("taskID", task.id)
+                bundle.putInt("groupID", task.groupId)
                 findNavController().navigate(R.id.action_tasksListFragment_to_addTaskFragment, bundle)
             },
             onTaskDeleteClick = { task ->
@@ -115,23 +131,14 @@ class TasksListFragment : Fragment() {
         taskViewModel.filteredTasks.observe(viewLifecycleOwner, Observer { tasks ->
             adapter.updateTasks(tasks)
         })
-//        viewModel.allTasks.observe(viewLifecycleOwner, Observer { tasks ->
-//            adapter.updateTasks(tasks)
-//        })
-
 
         binding.fab.setOnClickListener {
-            // Użyj NavController do nawigacji do fragmentu dodawania zadania
-            findNavController().navigate(R.id.action_tasksListFragment_to_addTaskFragment)
-        }
 
-        val spinnerAdapter = ArrayAdapter<Group>(requireContext(), android.R.layout.simple_spinner_dropdown_item)
-        binding.groupSpinner.adapter = spinnerAdapter
-        groupViewModel.groups.observe(viewLifecycleOwner, Observer { groupList ->
-            spinnerAdapter.clear()
-            spinnerAdapter.addAll(groupList)
-            spinnerAdapter.notifyDataSetChanged()
-        })
+            val groupchoice: Int = (binding.groupSpinner.selectedItem as Group).groupId
+            val bundle = Bundle()
+            bundle.putInt("groupID", groupchoice)
+            findNavController().navigate(R.id.action_tasksListFragment_to_addTaskFragment, bundle)
+        }
 
         binding.groupSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {

@@ -1,5 +1,6 @@
 package com.example.listazadan.tasks.views
 
+import android.app.AlertDialog
 import android.content.res.Resources
 import androidx.fragment.app.viewModels
 import android.os.Bundle
@@ -45,16 +46,33 @@ class GroupListFragment : Fragment() {
 
 
         val adapter = GroupAdapter(
-            onGroupClick = {
-                group: Group ->  true
+            onGroupClick = { group: Group ->
+                val bundle2 = Bundle()
+                bundle2.putInt("choosenGroup", group.groupId)
+                findNavController().navigate(R.id.action_groupListFragment_to_tasksListFragment,
+                    bundle2
+                )
             },
             onGroupDeleteClick = { group: Group ->
-                groupViewModel.deleteGroup(group)
+                if (group.groupId != 1) {
+                    groupViewModel.deleteGroup(group)
+                }
+                else{
+                    showDeleteAlertDialog()
+                }
             },
             onGroupEditClick = { group: Group ->
-                val bundle = Bundle()
-                bundle.putInt("groupID", group.groupId)
-                findNavController().navigate(R.id.action_groupListFragment_to_addGroupFragment2, bundle)
+                if (group.groupId != 1) {
+                    val bundle = Bundle()
+                    bundle.putInt("groupID", group.groupId)
+                    findNavController().navigate(
+                        R.id.action_groupListFragment_to_addGroupFragment2,
+                        bundle
+                    )
+                }
+                else{
+                    showEditAlertDialog()
+                }
             }
         )
         binding.recyclerViewGroup.adapter = adapter
@@ -78,6 +96,21 @@ class GroupListFragment : Fragment() {
         groupViewModel = ViewModelProvider(this, groupFactory)[GroupViewModel::class.java]
 
         return binding.root
+    }
+
+    private fun showDeleteAlertDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Próba usunięcia grupy Default!")
+            .setMessage("Niemożliwe usunięcie grupy domyślnej!")
+            .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+            .show()
+    }
+    private fun showEditAlertDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Próba edytowania grupy Default!")
+            .setMessage("Niemożliwa edycja grupy domyślnej!")
+            .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
+            .show()
     }
 
     override fun onDestroyView() {
