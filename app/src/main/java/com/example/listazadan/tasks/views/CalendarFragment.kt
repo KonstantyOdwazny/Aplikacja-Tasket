@@ -1,12 +1,14 @@
 package com.example.listazadan.tasks.views
 
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.net.ParseException
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -65,28 +67,32 @@ class CalendarFragment : Fragment() {
             Log.e("TAG3", "Resource not found: " + e.message)
         }
 
-        /// Ustawienie zdarzeń w kalendarzu
-        val events = mutableListOf<CalendarDay>()
-
-        // Dodaj zdarzenia do kalendarza
-        val calendar = Calendar.getInstance()
-        events.add(CalendarDay(calendar))
-
-        calendarView.setCalendarDays(events)
     }
 
     private fun updateCalendarWithTasks(tasks: List<Task>) {
-
-        //TODO Add calendar ICons
         val events = mutableListOf<CalendarDay>()
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())  // Asumując, że data jest w tym formacie
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())  // Zakładając, że data jest w tym formacie
 
+        // Dodawanie statycznego zdarzenia (dla testów)
+        val calendarTest = Calendar.getInstance()
+        val calendarDayTest: CalendarDay = CalendarDay(calendarTest).apply {
+            labelColor = R.color.green
+            selectedLabelColor = R.color.purple
+        }
+        events.add(calendarDayTest)
+
+        // Dodawanie zdarzeń z zadań
         tasks.forEach { task ->
-            if (task.date?.isNotBlank() == true) {  // Sprawdzenie, czy data nie jest pusta
+            if (task.date?.isNotBlank() == true) {
                 try {
                     val calendar = Calendar.getInstance()
                     calendar.time = format.parse(task.date)!!  // Parsowanie daty
-                    events.add(CalendarDay(calendar))  // Dodanie zdarzenia do kalendarza
+                    val calendarDay = CalendarDay(calendar).apply {
+                        // opcjonalnie ustawianie kolorów, jeśli to potrzebne
+                        labelColor = R.color.green
+                        selectedLabelColor = R.color.purple
+                    }
+                    events.add(calendarDay)  // Dodanie zdarzenia do kalendarza
                 } catch (e: ParseException) {
                     Log.e("CalendarFragment", "Error parsing date: ${task.date}", e)
                 }
