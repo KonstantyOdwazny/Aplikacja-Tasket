@@ -55,7 +55,8 @@ class GroupListFragment : Fragment() {
             },
             onGroupDeleteClick = { group: Group ->
                 if (group.groupId != 1) {
-                    groupViewModel.deleteGroup(group)
+                    //groupViewModel.deleteGroup(group)
+                    showDeleteConfirmationDialog(group.name) {groupViewModel.deleteGroup(group)}
                 }
                 else{
                     showDeleteAlertDialog()
@@ -111,6 +112,21 @@ class GroupListFragment : Fragment() {
             .setMessage("Niemożliwa edycja grupy domyślnej!")
             .setPositiveButton("OK") { dialog, which -> dialog.dismiss() }
             .show()
+    }
+
+    private fun showDeleteConfirmationDialog(group: String, onDeleteConfirmed: () -> Unit) {
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle("Potwierdzenie usunięcia")
+        builder.setMessage("Czy na pewno chcesz usunąć grupe: \"$group\"?")
+        builder.setPositiveButton("Tak") { dialog, id ->
+            onDeleteConfirmed()
+        }
+        builder.setNegativeButton("Nie") { dialog, id ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
     }
 
     override fun onDestroyView() {

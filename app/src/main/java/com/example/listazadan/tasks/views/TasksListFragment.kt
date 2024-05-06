@@ -1,5 +1,6 @@
 package com.example.listazadan.tasks.views
 
+import android.app.AlertDialog
 import android.content.res.Resources
 import com.example.listazadan.tasks.adapters.TaskAdapter
 
@@ -90,7 +91,8 @@ class TasksListFragment : Fragment() {
             },
             onTaskDeleteClick = { task ->
                 // Usuń zadanie
-                taskViewModel.deleteTask(task)
+                //taskViewModel.deleteTask(task)
+                showDeleteConfirmationDialog(task.title) { taskViewModel.deleteTask(task) }
             },
             onCheckClick = {task ->
                 // Zmodyfikuj czy zadanie wykonane
@@ -158,5 +160,21 @@ class TasksListFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun showDeleteConfirmationDialog(task: String, onDeleteConfirmed: () -> Unit) {
+        val builder = AlertDialog.Builder(requireActivity())
+        builder.setTitle("Potwierdzenie usunięcia")
+        builder.setMessage("Czy na pewno chcesz usunąć zadanie: \"$task\"?")
+        builder.setPositiveButton("Tak") { dialog, id ->
+            onDeleteConfirmed()
+        }
+        builder.setNegativeButton("Nie") { dialog, id ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
 }
 
