@@ -7,7 +7,7 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/listtoolbar"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
         android:background="@color/purple"
         app:layout_scrollFlags="scroll|enterAlways"
         app:logo="@drawable/tasket_logo"
